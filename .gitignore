@@ -1,0 +1,26 @@
+# Ignore compiled output and build artifacts
+/bin/
+/out/
+/target/
+*.o
+*.pyc
+*.class
+
+# Ignore dependency caches and package folders
+/node_modules/
+/vendor/
+/packages/
+
+# Ignore runtime and log files
+.log
+.tmp
+.lock
+
+# Ignore system and personal config files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Ignore environment variables file
+.env
