@@ -4,9 +4,11 @@ This guide outlines the standard workflow for onboarding a business and reportin
 
 ## Authentication Overview
 
+* **BASE URL:** https://da-maintenance-core.onrender.com/api/v1
 * **OTP Based:** No passwords required.
 * **JWT Tokens:** Once verified, include the token in the header of all protected routes:
 `Authorization: Bearer <your_jwt_token>`
+
 
 ---
 
