@@ -1,0 +1,348 @@
+openapi: 3.0.0
+info:
+  title: DA Maintenance Core API
+  version: 1.0.0
+paths:
+  /api/users:
+    get:
+      summary: Get all users
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    email:
+                      type: string
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '201':
+          description: User created
+  /api/business:
+    get:
+      summary: Get all businesses
+      responses:
+        '200':
+          description: A list of businesses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+    post:
+      summary: Create a new business
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Business created
+  /api/reports:
+    get:
+      summary: Get all reports
+      responses:
+        '200':
+          description: A list of reports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    description:
+                      type: string
+    post:
+      summary: Create a new report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Report created
+  /auth/me:
+    get:
+      summary: Get logged in user details
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+    put:
+      summary: Update logged in user details
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':
+          description: User details updated successfully
+  /auth/request-otp:
+    post:
+      summary: Request OTP
+      responses:
+        '200':
+          description: OTP requested successfully
+  /auth/verify-otp:
+    post:
+      summary: Verify OTP
+      responses:
+        '200':
+          description: OTP verified successfully
+  /businesses:
+    post:
+      summary: Create a business
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Business created successfully
+  /businesses/{id}:
+    get:
+      summary: Get business details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the business to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Business details retrieved successfully
+  /businesses:
+    get:
+      summary: Get all businesses
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of businesses retrieved successfully
+  /users:
+    get:
+      summary: Get all users tied to a business
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of users retrieved successfully
+  /all-users:
+    get:
+      summary: Get all users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of all users retrieved successfully
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details retrieved successfully
+  /services:
+    post:
+      summary: Create a service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Service created successfully
+  /services:
+    get:
+      summary: Get all services
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of services retrieved successfully
+  /services/{id}:
+    get:
+      summary: Get service by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the service to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Service details retrieved successfully
+  /fault-reports:
+    post:
+      summary: Create a fault report
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Fault report created successfully
+  /fault-reports:
+    get:
+      summary: Get all fault reports
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of fault reports retrieved successfully
+  /fault-reports/{id}:
+    get:
+      summary: Get fault report by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the fault report to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Fault report details retrieved successfully
+  /fault-reports/{id}/status:
+    put:
+      summary: Update fault report status
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the fault report to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+      responses:
+        '200':
+          description: Fault report status updated successfully
+  /users:
+    post:
+      summary: Create a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '201':
+          description: User created successfully
