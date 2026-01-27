@@ -3,9 +3,10 @@ info:
   title: DA Maintenance Core API
   version: 1.0.0
 paths:
+  # --- User Endpoints ---
   /api/users:
     get:
-      summary: Get all users
+      summary: Get all users (Legacy)
       responses:
         '200':
           description: A list of users
@@ -14,96 +15,64 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
-                    email:
-                      type: string
+                  $ref: '#/components/schemas/User'
     post:
-      summary: Create a new user
+      summary: Create a new user (Legacy)
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
+              $ref: '#/components/schemas/User'
       responses:
         '201':
           description: User created
-  /api/business:
+
+  /users:
     get:
-      summary: Get all businesses
+      summary: Get all users tied to a business
+      security:
+        - bearerAuth: []
       responses:
         '200':
-          description: A list of businesses
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
+          description: List of users retrieved successfully
     post:
-      summary: Create a new business
+      summary: Create a user
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
+              $ref: '#/components/schemas/User'
       responses:
         '201':
-          description: Business created
-  /api/reports:
+          description: User created successfully
+
+  /users/{id}:
     get:
-      summary: Get all reports
+      summary: Get user by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
-          description: A list of reports
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    title:
-                      type: string
-                    description:
-                      type: string
-    post:
-      summary: Create a new report
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                description:
-                  type: string
+          description: User details retrieved successfully
+
+  /all-users:
+    get:
+      summary: Get all users
+      security:
+        - bearerAuth: []
       responses:
-        '201':
-          description: Report created
+        '200':
+          description: List of all users retrieved successfully
+
+  # --- Auth Endpoints ---
   /auth/me:
     get:
       summary: Get logged in user details
@@ -112,17 +81,6 @@ paths:
       responses:
         '200':
           description: User details retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  name:
-                    type: string
-                  email:
-                    type: string
     put:
       summary: Update logged in user details
       security:
@@ -132,28 +90,46 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
+              $ref: '#/components/schemas/User'
       responses:
         '200':
           description: User details updated successfully
+
   /auth/request-otp:
     post:
       summary: Request OTP
       responses:
         '200':
           description: OTP requested successfully
+
   /auth/verify-otp:
     post:
       summary: Verify OTP
       responses:
         '200':
           description: OTP verified successfully
+
+  # --- Business Endpoints ---
+  /api/business:
+    get:
+      summary: Get all businesses (Legacy)
+      responses:
+        '200':
+          description: A list of businesses
+    post:
+      summary: Create a new business (Legacy)
+      responses:
+        '201':
+          description: Business created
+
   /businesses:
+    get:
+      summary: Get all businesses
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of businesses retrieved successfully
     post:
       summary: Create a business
       requestBody:
@@ -168,6 +144,7 @@ paths:
       responses:
         '201':
           description: Business created successfully
+
   /businesses/{id}:
     get:
       summary: Get business details
@@ -177,52 +154,21 @@ paths:
         - name: id
           in: path
           required: true
-          description: ID of the business to retrieve
           schema:
             type: string
       responses:
         '200':
           description: Business details retrieved successfully
-  /businesses:
-    get:
-      summary: Get all businesses
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: List of businesses retrieved successfully
-  /users:
-    get:
-      summary: Get all users tied to a business
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: List of users retrieved successfully
-  /all-users:
-    get:
-      summary: Get all users
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: List of all users retrieved successfully
-  /users/{id}:
-    get:
-      summary: Get user by ID
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID of the user to retrieve
-          schema:
-            type: string
-      responses:
-        '200':
-          description: User details retrieved successfully
+
+  # --- Service Endpoints ---
   /services:
+    get:
+      summary: Get all services
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of services retrieved successfully
     post:
       summary: Create a service
       requestBody:
@@ -237,14 +183,7 @@ paths:
       responses:
         '201':
           description: Service created successfully
-  /services:
-    get:
-      summary: Get all services
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: List of services retrieved successfully
+
   /services/{id}:
     get:
       summary: Get service by ID
@@ -254,13 +193,21 @@ paths:
         - name: id
           in: path
           required: true
-          description: ID of the service to retrieve
           schema:
             type: string
       responses:
         '200':
           description: Service details retrieved successfully
+
+  # --- Fault Reports Endpoints ---
   /fault-reports:
+    get:
+      summary: Get all fault reports
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of fault reports retrieved successfully
     post:
       summary: Create a fault report
       security:
@@ -282,14 +229,7 @@ paths:
       responses:
         '201':
           description: Fault report created successfully
-  /fault-reports:
-    get:
-      summary: Get all fault reports
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: List of fault reports retrieved successfully
+
   /fault-reports/{id}:
     get:
       summary: Get fault report by ID
@@ -299,12 +239,12 @@ paths:
         - name: id
           in: path
           required: true
-          description: ID of the fault report to retrieve
           schema:
             type: string
       responses:
         '200':
           description: Fault report details retrieved successfully
+
   /fault-reports/{id}/status:
     put:
       summary: Update fault report status
@@ -314,7 +254,6 @@ paths:
         - name: id
           in: path
           required: true
-          description: ID of the fault report to update
           schema:
             type: string
       requestBody:
@@ -329,20 +268,20 @@ paths:
       responses:
         '200':
           description: Fault report status updated successfully
-  /users:
-    post:
-      summary: Create a user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-      responses:
-        '201':
-          description: User created successfully
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
