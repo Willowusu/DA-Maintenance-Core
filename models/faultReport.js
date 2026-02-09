@@ -8,9 +8,9 @@ const faultReportSchema = new Schema({
   description: { type: String, required: true },
   location_detail: { type: String, required: true },
   image_urls: { type: [String], required: false },
-  status: { type: String, required: true, enum: ['reported', 'in_progress', 'resolved'], default: 'reported' },
+  status: { type: String, required: true, enum: ['reported', 'approved', 'in_progress', 'resolved'], default: 'reported' },
   status_history: [{
-    status: { type: String, required: true, enum: ['reported', 'in_progress', 'resolved'] },
+    status: { type: String, required: true, enum: ['reported', 'approved', 'in_progress', 'resolved'] },
     updated_at: { type: Date, required: true, default: Date.now },
   }],
 }, { timestamps: true });
