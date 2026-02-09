@@ -84,10 +84,13 @@ exports.verifyOtp = async (req, res) => {
 exports.getProfile = async (req, res) => {
     const user = req.user; // Retrieved from authentication middleware
 
+    //retrieve user details from database to ensure we have the latest info
+    const freshUser = await User.findById(user._id).populate('business'); // Populate business name if needed
+
     res.json({
         code: 200,
         status: 'success',
-        data: user,
+        data: freshUser,
         message: 'User profile retrieved successfully'
     });
 }
