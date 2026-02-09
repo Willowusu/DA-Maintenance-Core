@@ -60,8 +60,9 @@ exports.getFaultReports = async (req, res) => {
 
         // Fetch reports with pagination (optional) and sort by newest first
         const faultReports = await FaultReport.find(query)
-            .populate('service_id', 'name') // Shows category name instead of just ID
-            .populate('reporter_id', 'full_name') // Shows who reported it
+            .populate('service_id') // Shows category name instead of just ID
+            .populate('reporter_id') // Shows who reported it
+            .populate('business_id') // Shows business name instead of just ID
             .sort({ createdAt: -1 });
 
         res.status(200).json({
