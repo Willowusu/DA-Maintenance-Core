@@ -39,6 +39,9 @@ router.get('/all-users', authenticate, userController.getUsers);
 //route to get user by id
 router.get('/users/:id', authenticate, userController.getUserById);
 
+//route to delete a user account
+router.delete('/users', authenticate, userController.deleteUser);
+
 // route to create a service
 router.post('/services', serviceController.createService);
 

@@ -8,12 +8,12 @@ exports.requestOtp = async (req, res) => {
 
     //check if number is tied to a user
     const user = await User.findOne({ phone_number });
-    if (!user) {
+    if (!user || !user.is_active) {
         return res.json({
             code: 404,
             status: 'error',
             data: {},
-            message: 'User not found'
+            message: 'User not found or inactive'
         });
     }
 
@@ -96,20 +96,62 @@ exports.getProfile = async (req, res) => {
 }
 
 exports.updateProfile = async (req, res) => {
-    const user = req.user; // Retrieved from authentication middleware
-    const { full_name, phone_number, role } = req.body;
+    try {
+        const user = req.user;
+        const { full_name, phone_number } = req.body; // Removed 'role' for security
 
-    // Update user fields
-    if (full_name) user.full_name = full_name;
-    if (phone_number) user.phone_number = phone_number;
-    if (role) user.role = role;
+        // Update only allowed fields
+        if (full_name) user.full_name = full_name;
+        if (phone_number) user.phone_number = phone_number;
 
-    await user.save();
+        // Check if anything actually changed before saving
+        if (user.isModified()) {
+            await user.save();
+        }
 
-    res.json({
-        code: 200,
-        status: 'success',
-        data: user,
-        message: 'User profile updated successfully'
-    });
+        res.status(200).json({
+            code: 200,
+            status: 'success',
+            data: {
+                id: user._id,
+                full_name: user.full_name,
+                phone_number: user.phone_number,
+                role: user.role // Return it, but don't let them change it
+            },
+            message: 'User profile updated successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            code: 500,
+            status: 'error',
+            message: 'Internal server error',
+            details: error.message
+        });
+    }
+}
+
+exports.deleteAccount = async (req, res) => {
+    try {
+
+        const user = req.user; // Retrieved from authentication middleware
+
+        // Update user fields
+        user.is_active = false; // Soft delete by marking as inactive
+
+        await user.save();
+
+        res.json({
+            code: 200,
+            status: 'success',
+            data: user,
+            message: 'User profile deleted successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            code: 500,
+            status: 'error',
+            message: 'Internal server error',
+            details: error.message
+        });
+    }
 }
