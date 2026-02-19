@@ -28,6 +28,18 @@ exports.requestOtp = async (req, res) => {
         });
     }
 
+    //for testing purposes let a specific number always return the same OTP
+    if (phone_number === '233000000000') {
+        const testOtp = '123456';
+        otpCache.set(phone_number, testOtp);
+        return res.json({
+            code: 200,
+            status: 'success',
+            data: { otp: testOtp }, // In production, do not send OTP back in response
+            message: 'OTP sent successfully'
+        });
+    }
+
     // Logic to generate and send OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -130,28 +142,3 @@ exports.updateProfile = async (req, res) => {
     }
 }
 
-exports.deleteAccount = async (req, res) => {
-    try {
-
-        const user = req.user; // Retrieved from authentication middleware
-
-        // Update user fields
-        user.is_active = false; // Soft delete by marking as inactive
-
-        await user.save();
-
-        res.json({
-            code: 200,
-            status: 'success',
-            data: user,
-            message: 'User profile deleted successfully'
-        });
-    } catch (error) {
-        res.status(500).json({
-            code: 500,
-            status: 'error',
-            message: 'Internal server error',
-            details: error.message
-        });
-    }
-}

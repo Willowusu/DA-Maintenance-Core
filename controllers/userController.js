@@ -68,3 +68,29 @@ exports.getUsersByBusiness = async (req, res) => {
         message: 'Users retrieved successfully'
     });
 }   
+
+exports.deleteUserAccount = async (req, res) => {
+    try {
+
+        const user = req.user; // Retrieved from authentication middleware
+
+        // Update user fields
+        user.is_active = false; // Soft delete by marking as inactive
+
+        await user.save();
+
+        res.json({
+            code: 200,
+            status: 'success',
+            data: user,
+            message: 'User profile deleted successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            code: 500,
+            status: 'error',
+            message: 'Internal server error',
+            details: error.message
+        });
+    }
+}

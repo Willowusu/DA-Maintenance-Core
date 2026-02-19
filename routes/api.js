@@ -40,7 +40,7 @@ router.get('/all-users', authenticate, userController.getUsers);
 router.get('/users/:id', authenticate, userController.getUserById);
 
 //route to delete a user account
-router.delete('/users', authenticate, userController.deleteUser);
+router.delete('/users', authenticate, userController.deleteUserAccount);
 
 // route to create a service
 router.post('/services', serviceController.createService);
