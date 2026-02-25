@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Account | Security</title>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.11/dist/basecoat.cdn.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style>
+        /* Force modal to be hidden and overlayed correctly */
+        .bc-modal {
+            display: none; 
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+        }
+        .bc-modal.is-active {
+            display: flex;
+        }
+        .bc-modal__overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+        }
+        .bc-modal__container {
+            position: relative;
+            z-index: 60;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4 font-sans">
+
+    <div class="max-w-md w-full p-8 bg-white rounded-xl shadow-lg border border-slate-200">
+        <h2 class="text-2xl font-bold text-slate-900 mb-2 tracking-tight">Delete Account</h2>
+        <p class="text-slate-500 mb-6 text-sm">
+            We're sorry to see you go. Read our 
+            <a href="javascript:void(0)" id="open-terms" class="text-blue-600 hover:underline font-medium">Deletion Terms</a> 
+            to understand what happens to your data.
+        </p>
+
+        <div id="step-phone" class="space-y-4">
+            <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Registered Phone</label>
+                <input type="tel" id="phone" placeholder="+1 (555) 000-0000" 
+                    class="w-full p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-red-500 outline-none transition-all">
+            </div>
+            <button id="btn-send-otp" class="w-full bg-slate-900 text-white font-semibold py-3 rounded-lg hover:bg-black transition-all">
+                Verify & Continue
+            </button>
+        </div>
+
+        <div id="step-otp" style="display: none;" class="space-y-4">
+            <div class="flex flex-col gap-1 text-center">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Enter Code</label>
+                <input type="text" id="otp" maxlength="6" placeholder="000000" 
+                    class="w-full p-3 text-center text-2xl font-mono tracking-widest rounded-lg border border-slate-300 focus:ring-2 focus:ring-red-500 outline-none">
+            </div>
+            <button id="btn-confirm-delete" class="w-full bg-red-600 text-white font-semibold py-3 rounded-lg hover:bg-red-700 transition-all shadow-lg shadow-red-100">
+                Confirm Permanent Deletion
+            </button>
+            <button id="btn-back" class="w-full text-slate-400 text-xs hover:text-slate-600">Cancel and go back</button>
+        </div>
+
+        <div id="step-success" style="display: none;" class="text-center py-6">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✓</div>
+            <h3 class="text-xl font-bold text-slate-900">Request Sent</h3>
+            <p class="text-slate-500 mt-2 text-sm">Your account will be purged within 24 hours.</p>
+        </div>
+    </div>
+
+    <div class="bc-modal" id="deletion-modal">
+        <div class="bc-modal__overlay close-modal"></div>
+        <div class="bc-modal__container w-full max-w-md p-6 bg-white rounded-xl shadow-2xl mx-4">
+            <h3 class="text-lg font-bold text-slate-900 mb-4">Data Deletion Policy</h3>
+            
+            <div class="space-y-3 text-slate-600 text-sm leading-relaxed">
+                <p>Once you confirm your deletion request:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Your profile is hidden immediately.</li>
+                    <li>Photos/Files are deleted in <strong>24 hours</strong>.</li>
+                    <li>Backups are purged after 30 days.</li>
+                    <li>Linked subscriptions are cancelled.</li>
+                </ul>
+            </div>
+
+            <button class="mt-6 w-full py-2 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition-colors close-modal">
+                I Understand
+            </button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Modal Logic
+            $('#open-terms').on('click', function() {
+                $('#deletion-modal').addClass('is-active').fadeIn(200);
+            });
+
+            $('.close-modal').on('click', function() {
+                $('#deletion-modal').fadeOut(200, function() {
+                    $(this).removeClass('is-active');
+                });
+            });
+
+            // Step Transitions
+            $('#btn-send-otp').on('click', function() {
+                if($('#phone').val().length < 8) return alert("Enter valid phone");
+                
+                $('#step-phone').fadeOut(200, function() {
+                    $('#step-otp').fadeIn(200);
+                });
+            });
+
+            $('#btn-confirm-delete').on('click', function() {
+                if($('#otp').val().length < 4) return alert("Enter OTP");
+
+                if(confirm("Are you 100% sure?")) {
+                    $('#step-otp').fadeOut(200, function() {
+                        $('#step-success').fadeIn(200);
+                    });
+                }
+            });
+
+            $('#btn-back').on('click', function() {
+                $('#step-otp').fadeOut(200, function() {
+                    $('#step-phone').fadeIn(200);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -6,4 +6,9 @@ router.get('/privacy-policy', function(req, res, next) {
   res.render('privacy-policy');
 });
 
+/* GET users listing. */
+router.get('/delete-account', function(req, res, next) {
+  res.render('delete-account');
+});
+
 module.exports = router;
