@@ -1,0 +1,70 @@
+<div class="card w-full shadow-xl border border-slate-200 rounded-xl overflow-hidden bg-white">
+  <header class="p-6 border-b border-slate-100 bg-slate-50/50">
+    <div class="flex justify-between items-start">
+      <div>
+        <h2 class="text-xl font-bold text-slate-900">Reports & Analytics</h2>
+        <p class="text-sm text-slate-500">Configure filters to generate custom data insights</p>
+      </div>
+      <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">Real-time Data</span>
+    </div>
+  </header>
+
+  <section class="p-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+        <p class="text-xs text-slate-500 uppercase font-semibold">Total Queries</p>
+        <p class="text-lg font-bold">1,284</p>
+      </div>
+      <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+        <p class="text-xs text-slate-500 uppercase font-semibold">Avg. Growth</p>
+        <p class="text-lg font-bold text-green-600">+12.5%</p>
+      </div>
+      </div>
+
+    <form class="form grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="grid gap-2">
+        <label for="date-from" class="text-sm font-semibold text-slate-700">Date From</label>
+        <input type="date" id="date-from" class="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+
+      <div class="grid gap-2">
+        <label for="date-to" class="text-sm font-semibold text-slate-700">Date To</label>
+        <input type="date" id="date-to" class="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+
+      <div class="grid gap-2">
+        <label for="category" class="text-sm font-semibold text-slate-700">Category</label>
+        <select id="category" class="w-full p-2 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+          <option value="faults">Fault Reports</option>
+          <option value="businesses">Businesses</option>
+          <option value="users">Users</option>
+          <option value="services">Services</option>
+        </select>
+      </div>
+
+      <div class="grid gap-2 md:col-span-3">
+        <label class="text-sm font-semibold text-slate-700">Report Granularity</label>
+        <div class="flex gap-4 mt-1">
+          <label class="flex items-center gap-2 text-sm cursor-pointer">
+            <input type="radio" name="granularity" value="daily" checked class="text-slate-900"> Daily
+          </label>
+          <label class="flex items-center gap-2 text-sm cursor-pointer">
+            <input type="radio" name="granularity" value="weekly" class="text-slate-900"> Weekly
+          </label>
+          <label class="flex items-center gap-2 text-sm cursor-pointer">
+            <input type="radio" name="granularity" value="monthly" class="text-slate-900"> Monthly
+          </label>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <footer class="p-6 pt-0 flex flex-col sm:flex-row gap-3">
+    <button type="button" class="btn flex-1 bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-lg font-medium transition-colors">
+      Generate Report
+    </button>
+    <button type="button" class="btn flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 py-2.5 rounded-lg font-medium transition-colors">
+      Export to CSV
+    </button>
+  </footer>
+</div>

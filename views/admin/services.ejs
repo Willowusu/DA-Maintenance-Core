@@ -1,0 +1,59 @@
+<div class="w-full space-y-6">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight text-slate-900">Services Catalog</h1>
+      <p class="text-slate-500">Define service types, pricing models, and SLAs.</p>
+    </div>
+    <button class="btn inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-all font-medium shadow-sm">
+      <i data-lucide="plus-circle" class="w-4 h-4"></i>
+      Add New Service
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    
+    <div class="group card bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+      <div class="flex justify-between items-start mb-4">
+        <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-slate-900 transition-colors">
+          <img src="https://www.svgrepo.com/show/283395/roof.svg" alt="Roofing" class="w-7 h-7 group-hover:invert">
+        </div>
+        <div class="flex gap-1">
+           <button class="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
+            <i data-lucide="edit-3" class="w-4 h-4"></i>
+          </button>
+          <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <h3 class="text-lg font-bold text-slate-900 mb-1">Roofing Repairs</h3>
+      <p class="text-sm text-slate-500 line-clamp-2 mb-4">
+        Minor leak patching, tile replacement, gutter issues
+      </p>
+
+      <div class="space-y-3 pt-4 border-t border-slate-100">
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-slate-400 flex items-center gap-1.5">
+            <i data-lucide="clock" class="w-4 h-4"></i> Response
+          </span>
+          <span class="font-semibold text-slate-700">Within 24–48 hours</span>
+        </div>
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-slate-400 flex items-center gap-1.5">
+            <i data-lucide="banknote" class="w-4 h-4"></i> Price
+          </span>
+          <span class="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">GHS 130+</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card bg-slate-50 border border-dashed border-slate-300 rounded-2xl p-6 flex flex-col items-center justify-center text-center group cursor-pointer hover:bg-slate-100 transition-all">
+      <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-2 shadow-sm">
+        <i data-lucide="plus" class="w-5 h-5 text-slate-400 group-hover:text-slate-900"></i>
+      </div>
+      <p class="text-sm font-bold text-slate-500 group-hover:text-slate-900">Create Template</p>
+    </div>
+
+  </div>
+</div>

@@ -3,12 +3,12 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/privacy-policy', function(req, res, next) {
-  res.render('privacy-policy');
+  res.render('web/privacy-policy');
 });
 
 /* GET users listing. */
 router.get('/delete-account', function(req, res, next) {
-  res.render('delete-account');
+  res.render('web/delete-account');
 });
 
 module.exports = router;
