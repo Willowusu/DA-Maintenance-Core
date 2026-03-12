@@ -22,7 +22,7 @@ router.post('/auth/request-otp', authController.requestOtp);
 router.post('/auth/verify-otp', authController.verifyOtp);
 
 // route to create a business
-router.post('/businesses', businessController.createBusiness);
+router.post('/businesses', authenticate, businessController.createBusiness);
 
 // route to get business details
 router.get('/businesses/:id', authenticate, businessController.getBusinessById);
@@ -35,6 +35,12 @@ router.get('/users', authenticate, userController.getUsersByBusiness);
 
 //route to get all users
 router.get('/all-users', authenticate, userController.getUsers);
+
+//route to get all user tied toa business
+router.get('/app-users', authenticate, userController.getAppUsers);
+
+//route to get all user tied toa business
+router.get('/admin-users', authenticate, userController.getAdminUsers);
 
 //route to get user by id
 router.get('/users/:id', authenticate, userController.getUserById);
@@ -65,5 +71,9 @@ router.put('/fault-reports/:id/status', authenticate, reportController.updateFau
 
 // route to create a user
 router.post('/users', userController.createUser);
+
+
+// admin routes
+
 
 module.exports = router;

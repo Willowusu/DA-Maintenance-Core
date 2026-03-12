@@ -1,4 +1,6 @@
 const Business = require('../models/business');
+const User = require('../models/user');
+const Fault = require('../models/faultReport');
 
 exports.createBusiness = async (req, res) => {
     const { name, address, contact_person, phone, email } = req.body;
@@ -22,15 +24,54 @@ exports.createBusiness = async (req, res) => {
 }
 
 exports.getBusinesses = async (req, res) => {
-    // Logic to fetch all businesses
-    const businesses = await Business.find();
+    try {
+        const businesses = await Business.aggregate([
+            {
+                $lookup: {
+                    from: 'users', // The collection name for Users
+                    localField: '_id',
+                    foreignField: 'business',
+                    as: 'staff'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'faults', // The collection name for Faults
+                    localField: '_id',
+                    foreignField: 'business',
+                    as: 'faults'
+                }
+            },
+            {
+                $project: {
+                    name: 1, // Add other business fields you need here
+                    address: 1,
+                    contact_person: 1,
+                    phone: 1,
+                    email: 1,
+                    staff_count: { $size: '$staff' },
+                    pending_faults: {
+                        $size: {
+                            $filter: {
+                                input: '$faults',
+                                as: 'fault',
+                                cond: { $in: ['$$fault.status', ['reported', 'approved', 'in_progress']] }
+                            }
+                        }
+                    }
+                }
+            }
+        ]);
 
-    res.json({
-        code: 200,
-        status: 'success',
-        data: businesses,
-        message: 'Businesses retrieved successfully'
-    });
+        res.json({
+            code: 200,
+            status: 'success',
+            data: businesses,
+            message: 'Businesses retrieved successfully'
+        });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
 }
 
 exports.getBusinessById = async (req, res) => {

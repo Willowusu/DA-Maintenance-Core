@@ -33,6 +33,32 @@ exports.getUsers = async (req, res) => {
     });
 }
 
+exports.getAppUsers = async (req, res) => {
+    // Logic to fetch all user
+    //users can be business_admin or reporter
+    const users = await User.find({ role: { $in: ['business_admin', 'reporter'] } }).populate('business', 'name');
+
+    res.json({
+        code: 200,
+        status: 'success',
+        data: users,
+        message: 'Users retrieved successfully'
+    });
+}
+
+exports.getAdminUsers = async (req, res) => {
+    // Logic to fetch all user
+    //users can be business_admin or reporter
+    const users = await User.find({ role: 'super_admin' });
+
+    res.json({
+        code: 200,
+        status: 'success',
+        data: users,
+        message: 'Users retrieved successfully'
+    });
+}
+
 exports.getUserById = async (req, res) => {
     const { id } = req.params;
     // Logic to fetch a user by ID

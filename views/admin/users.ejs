@@ -1,45 +1,60 @@
-<div class="w-full space-y-6">
+<style>
+  .alert {
+    @apply flex gap-3 p-4 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 items-start mb-6;
+  }
+
+  .alert-destructive {
+    @apply flex gap-3 p-4 rounded-lg bg-rose-50 text-rose-700 border border-rose-100 items-start mb-6;
+  }
+</style>
+<div class="w-full max-w-7xl mx-auto space-y-6">
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
       <h1 class="text-3xl font-bold tracking-tight text-slate-900">User Management</h1>
       <p class="text-slate-500">Manage access levels for Business Admins and Reporters.</p>
     </div>
     <div class="flex items-center gap-2">
-       <button class="btn inline-flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-50 transition-all font-medium shadow-sm">
-        <i data-lucide="download" class="w-4 h-4"></i>
-        Export to CSV
+      <button id="btn-export-users"
+        class="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-50 transition-all font-medium shadow-sm">
+        <i data-lucide="download" class="w-4 h-4"></i> Export to CSV
       </button>
-      <button class="btn inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-all font-medium shadow-sm">
-        <i data-lucide="user-plus" class="w-4 h-4"></i>
-        Invite User
+      <button onclick="toggleInviteModal(true)"
+        class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-all font-medium shadow-sm">
+        <i data-lucide="user-plus" class="w-4 h-4"></i> Invite User
       </button>
     </div>
   </div>
 
+  <div id="alert-container" class="hidden transition-all duration-300"></div>
+
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
     <div class="relative lg:col-span-1">
       <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-      <input type="text" placeholder="Search name or phone..." 
-             class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
+      <input type="text" id="user-search" placeholder="Search name or phone..."
+        class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
     </div>
 
     <div class="relative">
-      <label class="absolute -top-2 left-3 bg-white px-1 text-[10px] font-bold text-slate-400 uppercase">Created From</label>
-      <input type="date" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
+      <label class="absolute -top-2 left-3 bg-white px-1 text-[10px] font-bold text-slate-400 uppercase">From</label>
+      <input type="date" id="date-from"
+        class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
     </div>
 
     <div class="relative">
-      <label class="absolute -top-2 left-3 bg-white px-1 text-[10px] font-bold text-slate-400 uppercase">Created To</label>
-      <input type="date" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
+      <label class="absolute -top-2 left-3 bg-white px-1 text-[10px] font-bold text-slate-400 uppercase">To</label>
+      <input type="date" id="date-to"
+        class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
     </div>
 
     <div class="relative">
-      <select class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm appearance-none bg-white">
+      <select id="role-filter"
+        class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm appearance-none bg-white">
         <option value="">All Roles</option>
         <option value="business_admin">Business Admin</option>
         <option value="reporter">Reporter</option>
       </select>
-      <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+      <i data-lucide="chevron-down"
+        class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
     </div>
   </div>
 
@@ -47,45 +62,255 @@
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-slate-50/50 border-b border-slate-100">
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">User Details</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Assigned Business</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Role</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Date Created</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 text-right">Actions</th>
+          <tr
+            class="bg-slate-50/50 border-b border-slate-100 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <th class="px-6 py-4">User Details</th>
+            <th class="px-6 py-4">Assigned Business</th>
+            <th class="px-6 py-4">Role</th>
+            <th class="px-6 py-4">Date Created</th>
+            <th class="px-6 py-4">Status</th>
+            <th class="px-6 py-4 text-right">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100 text-sm">
-          <tr class="hover:bg-slate-50/50 transition-colors">
-            <td class="px-6 py-4 font-medium text-slate-900">John Doe</td>
-            <td class="px-6 py-4 text-slate-600 font-medium text-slate-700">Main Street Plaza</td>
-            <td class="px-6 py-4"><span class="px-2 py-1 rounded bg-purple-50 text-purple-700 text-xs font-bold uppercase">Business Admin</span></td>
-            <td class="px-6 py-4 text-slate-600">2024-05-15</td>
-            <td class="px-6 py-4"><span class="text-emerald-600 font-semibold italic text-xs">Active</span></td>
-            <td class="px-6 py-4 text-right">
-                <button class="text-slate-400 hover:text-slate-900"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
-            </td>
-          </tr>
+        <tbody id="user-table-body" class="divide-y divide-slate-100 text-sm">
         </tbody>
       </table>
     </div>
 
-    <footer class="p-4 border-t border-slate-100 bg-slate-50/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <footer
+      class="p-4 border-t border-slate-100 bg-slate-50/30 flex flex-col sm:flex-row items-center justify-between gap-4">
       <p class="text-xs text-slate-500 font-medium">
-        Showing <span class="text-slate-900">1</span> to <span class="text-slate-900">10</span> of <span class="text-slate-900">48</span> users
+        Showing <span id="user-range" class="text-slate-900 font-bold">0-0</span> of <span id="user-total"
+          class="text-slate-900 font-bold">0</span> users
       </p>
-      <div class="flex items-center gap-1">
-        <button class="p-2 border border-slate-200 rounded-lg bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
+      <div class="flex items-center gap-2" id="pagination-controls">
+        <button id="prev-user-page"
+          class="p-2 border border-slate-200 rounded-lg bg-white hover:bg-slate-50 disabled:opacity-50 transition-all">
           <i data-lucide="chevron-left" class="w-4 h-4"></i>
         </button>
-        <button class="px-3 py-1 border border-slate-900 rounded-lg bg-slate-900 text-white text-xs font-bold">1</button>
-        <button class="px-3 py-1 border border-slate-200 rounded-lg bg-white text-slate-600 hover:bg-slate-50 text-xs font-bold">2</button>
-        <button class="px-3 py-1 border border-slate-200 rounded-lg bg-white text-slate-600 hover:bg-slate-50 text-xs font-bold">3</button>
-        <button class="p-2 border border-slate-200 rounded-lg bg-white hover:bg-slate-50">
+        <div id="page-numbers" class="flex gap-1"></div>
+        <button id="next-user-page"
+          class="p-2 border border-slate-200 rounded-lg bg-white hover:bg-slate-50 disabled:opacity-50 transition-all">
           <i data-lucide="chevron-right" class="w-4 h-4"></i>
         </button>
       </div>
     </footer>
   </div>
 </div>
+
+<div id="invite-modal"
+  class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+  <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 animate-in zoom-in-95 duration-200">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl font-bold text-slate-900">Invite New User</h3>
+      <button onclick="toggleInviteModal(false)"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
+    </div>
+    <form id="invite-user-form" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Full Name</label>
+        <input type="text" id="inv-name" required
+          class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+      </div>
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Phone Number (+233)</label>
+        <input type="tel" id="inv-phone" required placeholder="24 123 4567"
+          class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Role</label>
+          <select id="inv-role" class="w-full px-3 py-2 border rounded-lg outline-none bg-white">
+            <option value="reporter">Reporter</option>
+            <option value="business_admin">Business Admin</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Business</label>
+          <select id="inv-business" required class="w-full px-3 py-2 border rounded-lg outline-none bg-white text-xs">
+            <option value="">Loading...</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex gap-3 pt-4">
+        <button type="button" onclick="toggleInviteModal(false)"
+          class="flex-1 py-2.5 border rounded-lg font-medium hover:bg-slate-50 transition-all">Cancel</button>
+        <button type="submit" id="btn-send-invite"
+          class="flex-1 py-2.5 bg-slate-900 text-white rounded-lg font-medium shadow-lg hover:bg-slate-800 transition-all">Send
+          Invite</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let allUsers = [];
+  let filteredUsers = [];
+  let currentPage = 1;
+  const itemsPerPage = 10;
+
+  const showAlert = (type, title, desc) => {
+    const isErr = type === 'danger' || type === 'error';
+    const html = `
+            <div class="${isErr ? 'alert-destructive' : 'alert'} animate-in slide-in-from-top-2">
+                <i data-lucide="${isErr ? 'alert-circle' : 'check-circle'}" class="w-5 h-5"></i>
+                <div><h2 class="font-bold text-sm">${title}</h2><p class="text-xs">${desc}</p></div>
+            </div>`;
+    $('#alert-container').html(html).removeClass('hidden').show();
+    lucide.createIcons();
+    setTimeout(() => $('#alert-container').fadeOut(), 5000);
+  };
+
+  function toggleInviteModal(show) {
+    $('#invite-modal').toggleClass('hidden', !show);
+    if (show) fetchBusinessesForInvite();
+    else $('#invite-user-form')[0].reset();
+  }
+
+  // 1. Fetch Users Data
+  function fetchUsers() {
+    $.ajax({
+      url: '/api/v1/app-users',
+      method: 'GET',
+      success: (res) => {
+        allUsers = res.data;
+        applyUserFilters();
+      },
+      error: () => showAlert('error', 'Sync Failed', 'Could not load users.')
+    });
+  }
+
+  // 2. Fetch Businesses for Modal Dropdown
+  function fetchBusinessesForInvite() {
+    $.ajax({
+      url: '/api/v1/businesses',
+      method: 'GET',
+      success: (res) => {
+        const select = $('#inv-business').empty();
+        select.append('<option value="">Assign Business</option>');
+        res.data.forEach(b => {
+          select.append(`<option value="${b._id}">${b.name}</option>`);
+        });
+      }
+    });
+  }
+
+  // 3. Filter Logic
+function applyUserFilters() {
+    const query = $('#user-search').val().toLowerCase();
+    const role = $('#role-filter').val();
+    const fromDate = $('#date-from').val() ? new Date($('#date-from').val()).setHours(0, 0, 0, 0) : null;
+    const toDate = $('#date-to').val() ? new Date($('#date-to').val()).setHours(23, 59, 59, 999) : null;
+
+    filteredUsers = allUsers.filter(u => {
+      // Use full_name and add null checks (using optional chaining or || '')
+      const name = (u.full_name || '').toLowerCase();
+      const phone = (u.phone_number || '');
+      
+      const matchesSearch = name.includes(query) || phone.includes(query);
+      const matchesRole = !role || u.role === role;
+
+      const createdAt = new Date(u.createdAt).getTime();
+      const matchesFrom = !fromDate || createdAt >= fromDate;
+      const matchesTo = !toDate || createdAt <= toDate;
+
+      return matchesSearch && matchesRole && matchesFrom && matchesTo;
+    });
+
+    currentPage = 1;
+    renderUserTable();
+}
+
+  // 4. Render Table
+  function renderUserTable() {
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const items = filteredUsers.slice(start, end);
+    const tbody = $('#user-table-body').empty();
+
+    if (!items.length) {
+      tbody.append('<tr><td colspan="6" class="py-12 text-center text-slate-400">No users found matching filters.</td></tr>');
+    }
+
+    items.forEach(u => {
+      const roleColor = u.role === 'business_admin' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700';
+      tbody.append(`
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 font-medium text-slate-900">
+                        <div>${u.full_name}</div>
+                        <div class="text-[11px] text-slate-400 font-normal">${u.phone_number}</div>
+                    </td>
+                    <td class="px-6 py-4 text-slate-600 font-medium">${u.business?.name || 'N/A'}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 rounded ${roleColor} text-[10px] font-bold uppercase tracking-tighter">
+                            ${u.role.replace('_', ' ')}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-slate-500 text-xs">${u.createdAt.split('T')[0]}</td>
+                    <td class="px-6 py-4"><span class="text-emerald-600 font-semibold italic text-xs">Active</span></td>
+                    <td class="px-6 py-4 text-right">
+                        <button class="p-2 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-900"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>
+            `);
+    });
+
+    const total = filteredUsers.length;
+    $('#user-range').text(`${total === 0 ? 0 : start + 1}-${Math.min(end, total)}`);
+    $('#user-total').text(total);
+    $('#prev-user-page').prop('disabled', currentPage === 1);
+    $('#next-user-page').prop('disabled', end >= total);
+
+    lucide.createIcons();
+  }
+
+  // 5. Form Submission
+  $('#invite-user-form').on('submit', function (e) {
+    e.preventDefault();
+    const btn = $('#btn-send-invite');
+    const payload = {
+      name: $('#inv-name').val(),
+      phone_number: '233' + $('#inv-phone').val().replace(/^0/, ''),
+      role: $('#inv-role').val(),
+      business_id: $('#inv-business').val()
+    };
+
+    btn.prop('disabled', true).text('Sending SMS...');
+
+    $.ajax({
+      url: '/api/v1/users/invite',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(payload),
+      success: () => {
+        showAlert('success', 'Invite Sent', `Invitation link sent to ${payload.phone_number}`);
+        toggleInviteModal(false);
+        fetchUsers();
+      },
+      error: (err) => {
+        showAlert('error', 'Invite Failed', err.responseJSON?.message || 'Could not send invitation.');
+        btn.prop('disabled', false).text('Send Invite');
+      }
+    });
+  });
+
+  // Event Handlers
+  $('#user-search, #date-from, #date-to, #role-filter').on('input change', applyUserFilters);
+  $('#prev-user-page').click(() => { if (currentPage > 1) { currentPage--; renderUserTable(); } });
+  $('#next-user-page').click(() => { if ((currentPage * itemsPerPage) < filteredUsers.length) { currentPage++; renderUserTable(); } });
+
+  // CSV Export
+  $('#btn-export-users').click(() => {
+    let csv = 'Name,Phone,Business,Role,Date Created\n';
+    filteredUsers.forEach(u => {
+      csv += `"${u.full_name}","${u.phone_number}","${u.business?.name || 'N/A'}","${u.role}","${u.createdAt.split('T')[0]}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `DA_Users_List_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  });
+
+  $(document).ready(fetchUsers);
+</script>

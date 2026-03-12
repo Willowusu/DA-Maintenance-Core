@@ -3,6 +3,10 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
+    res.redirect('/admin/login');
+});
+/* GET users listing. */
+router.get('/login', function (req, res, next) {
     res.render('admin/login', { layout: 'layouts/admin/auth', title: 'Admin Login', activePage: 'login' });
 });
 

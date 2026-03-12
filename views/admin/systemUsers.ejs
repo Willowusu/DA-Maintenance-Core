@@ -1,91 +1,163 @@
 <div class="w-full space-y-6">
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <div>
-      <h1 class="text-3xl font-bold tracking-tight text-slate-900">System User Management</h1>
-      <p class="text-slate-500">Manage access levels for system admin users.</p>
-    </div>
-    <div class="flex items-center gap-2">
-       <button class="btn inline-flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-50 transition-all font-medium shadow-sm">
-        <i data-lucide="download" class="w-4 h-4"></i>
-        Export to CSV
-      </button>
-      <button class="btn inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-all font-medium shadow-sm">
-        <i data-lucide="user-plus" class="w-4 h-4"></i>
-        Invite User
-      </button>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-    <div class="relative lg:col-span-1">
-      <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-      <input type="text" placeholder="Search name or phone..." 
-             class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
-    </div>
-
-    <div class="relative">
-      <label class="absolute -top-2 left-3 bg-white px-1 text-[10px] font-bold text-slate-400 uppercase">Created From</label>
-      <input type="date" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
-    </div>
-
-    <div class="relative">
-      <label class="absolute -top-2 left-3 bg-white px-1 text-[10px] font-bold text-slate-400 uppercase">Created To</label>
-      <input type="date" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
-    </div>
-
-    <div class="relative">
-      <select class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm appearance-none bg-white">
-        <option value="">All Roles</option>
-        <option value="business_admin">Business Admin</option>
-        <option value="reporter">Reporter</option>
-      </select>
-      <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
-    </div>
-  </div>
-
-  <div class="card bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse">
-        <thead>
-          <tr class="bg-slate-50/50 border-b border-slate-100">
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">User Details</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Assigned Business</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Role</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Date Created</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100 text-sm">
-          <tr class="hover:bg-slate-50/50 transition-colors">
-            <td class="px-6 py-4 font-medium text-slate-900">John Doe</td>
-            <td class="px-6 py-4 text-slate-600 font-medium text-slate-700">Main Street Plaza</td>
-            <td class="px-6 py-4"><span class="px-2 py-1 rounded bg-purple-50 text-purple-700 text-xs font-bold uppercase">Super Admin</span></td>
-            <td class="px-6 py-4 text-slate-600">2024-05-15</td>
-            <td class="px-6 py-4"><span class="text-emerald-600 font-semibold italic text-xs">Active</span></td>
-            <td class="px-6 py-4 text-right">
-                <button class="text-slate-400 hover:text-slate-900"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <footer class="p-4 border-t border-slate-100 bg-slate-50/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-xs text-slate-500 font-medium">
-        Showing <span class="text-slate-900">1</span> to <span class="text-slate-900">10</span> of <span class="text-slate-900">48</span> users
-      </p>
-      <div class="flex items-center gap-1">
-        <button class="p-2 border border-slate-200 rounded-lg bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
-          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900">System Users</h1>
+            <p class="text-slate-500">Manage internal Super Admins and platform moderators.</p>
+        </div>
+        <button onclick="toggleAdminModal(true)" class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-all font-medium shadow-sm">
+            <i data-lucide="shield-plus" class="w-4 h-4"></i> Add System Admin
         </button>
-        <button class="px-3 py-1 border border-slate-900 rounded-lg bg-slate-900 text-white text-xs font-bold">1</button>
-        <button class="px-3 py-1 border border-slate-200 rounded-lg bg-white text-slate-600 hover:bg-slate-50 text-xs font-bold">2</button>
-        <button class="px-3 py-1 border border-slate-200 rounded-lg bg-white text-slate-600 hover:bg-slate-50 text-xs font-bold">3</button>
-        <button class="p-2 border border-slate-200 rounded-lg bg-white hover:bg-slate-50">
-          <i data-lucide="chevron-right" class="w-4 h-4"></i>
-        </button>
-      </div>
-    </footer>
-  </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase">Total Admins</p>
+            <p id="stat-total" class="text-2xl font-bold text-slate-900">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase">Active Now</p>
+            <p id="stat-active" class="text-2xl font-bold text-emerald-600">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <p class="text-xs font-bold text-slate-400 uppercase">Super Admins</p>
+            <p id="stat-super" class="text-2xl font-bold text-purple-600">0</p>
+        </div>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50 border-b border-slate-100">
+                        <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500">Administrator</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500">Role</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500">Contact</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500">Status</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-table-body" class="divide-y divide-slate-50 text-sm">
+                    </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+<div id="admin-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6">
+        <h3 class="text-xl font-bold text-slate-900 mb-4">Register System Admin</h3>
+        <form id="admin-form" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Full Name</label>
+                <input type="text" id="adm-name" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Phone Number</label>
+                <input type="tel" id="adm-phone" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-1">System Role</label>
+                <select id="adm-role" class="w-full px-3 py-2 border rounded-lg bg-white outline-none">
+                    <option value="super_admin">Super Admin</option>
+                    <option value="business_admin">Regional Manager (Business Admin)</option>
+                </select>
+                <p class="text-[10px] text-slate-400 mt-1 italic">*Super Admins have no business restrictions.</p>
+            </div>
+            <div class="flex gap-3 pt-4">
+                <button type="button" onclick="toggleAdminModal(false)" class="flex-1 py-2 border rounded-lg">Cancel</button>
+                <button type="submit" class="flex-1 py-2 bg-slate-900 text-white rounded-lg font-bold">Create User</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let adminUsers = [];
+
+    function fetchAdmins() {
+        $.ajax({
+            url: '/api/v1/admin-users',
+            method: 'GET',
+            success: (res) => {
+                adminUsers = res.data;
+                updateStats();
+                renderAdminTable();
+            }
+        });
+    }
+
+    function updateStats() {
+        $('#stat-total').text(adminUsers.length);
+        $('#stat-active').text(adminUsers.filter(u => u.is_active).length);
+        $('#stat-super').text(adminUsers.filter(u => u.role === 'super_admin').length);
+    }
+
+    function renderAdminTable() {
+        const tbody = $('#admin-table-body').empty();
+        
+        adminUsers.forEach(u => {
+            const roleBadge = u.role === 'super_admin' 
+                ? 'bg-purple-50 text-purple-700 border-purple-100' 
+                : 'bg-blue-50 text-blue-700 border-blue-100';
+            
+            const statusBadge = u.is_active 
+                ? 'bg-emerald-50 text-emerald-600' 
+                : 'bg-slate-100 text-slate-400';
+
+            tbody.append(`
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-slate-900">${u.full_name}</div>
+                        <div class="text-[10px] text-slate-400 font-medium tracking-wide">
+                            ${u.business ? u.business.name : 'PLATFORM LEVEL'}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase border ${roleBadge}">
+                            ${u.role.replace('_', ' ')}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 font-mono text-xs text-slate-600">${u.phone_number}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full ${u.is_active ? 'bg-emerald-500' : 'bg-slate-300'}"></span>
+                            <span class="text-xs font-medium ${u.is_active ? 'text-slate-700' : 'text-slate-400'}">
+                                ${u.is_active ? 'Active' : 'Suspended'}
+                            </span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex justify-end gap-2">
+                            <button onclick="toggleUserStatus('${u._id}', ${u.is_active})" title="${u.is_active ? 'Suspend' : 'Activate'}" class="p-2 hover:bg-white border border-transparent hover:border-slate-200 rounded-lg transition-all">
+                                <i data-lucide="${u.is_active ? 'user-x' : 'user-check'}" class="w-4 h-4 ${u.is_active ? 'text-rose-500' : 'text-emerald-500'}"></i>
+                            </button>
+                            <button class="p-2 hover:bg-white border border-transparent hover:border-slate-200 rounded-lg text-slate-400 hover:text-slate-900">
+                                <i data-lucide="settings" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `);
+        });
+        lucide.createIcons();
+    }
+
+    function toggleUserStatus(id, currentStatus) {
+        if(!confirm(`Are you sure you want to ${currentStatus ? 'Suspend' : 'Activate'} this user?`)) return;
+        
+        $.ajax({
+            url: `/api/v1/admin-users/${id}/toggle-status`,
+            method: 'PATCH',
+            data: JSON.stringify({ is_active: !currentStatus }),
+            contentType: 'application/json',
+            success: () => fetchAdmins()
+        });
+    }
+
+    function toggleAdminModal(show) {
+        $('#admin-modal').toggleClass('hidden', !show);
+        if(!show) $('#admin-form')[0].reset();
+    }
+
+    $(document).ready(fetchAdmins);
+</script>

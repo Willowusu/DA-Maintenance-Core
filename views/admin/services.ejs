@@ -4,56 +4,118 @@
       <h1 class="text-3xl font-bold tracking-tight text-slate-900">Services Catalog</h1>
       <p class="text-slate-500">Define service types, pricing models, and SLAs.</p>
     </div>
-    <button class="btn inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-all font-medium shadow-sm">
-      <i data-lucide="plus-circle" class="w-4 h-4"></i>
-      Add New Service
+    <button onclick="toggleServiceModal(true)" class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-all font-medium shadow-sm">
+      <i data-lucide="plus-circle" class="w-4 h-4"></i> Add New Service
     </button>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    
-    <div class="group card bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
-      <div class="flex justify-between items-start mb-4">
-        <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-slate-900 transition-colors">
-          <img src="https://www.svgrepo.com/show/283395/roof.svg" alt="Roofing" class="w-7 h-7 group-hover:invert">
-        </div>
-        <div class="flex gap-1">
-           <button class="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
-            <i data-lucide="edit-3" class="w-4 h-4"></i>
-          </button>
-          <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
-            <i data-lucide="trash-2" class="w-4 h-4"></i>
-          </button>
-        </div>
-      </div>
-
-      <h3 class="text-lg font-bold text-slate-900 mb-1">Roofing Repairs</h3>
-      <p class="text-sm text-slate-500 line-clamp-2 mb-4">
-        Minor leak patching, tile replacement, gutter issues
-      </p>
-
-      <div class="space-y-3 pt-4 border-t border-slate-100">
-        <div class="flex items-center justify-between text-sm">
-          <span class="text-slate-400 flex items-center gap-1.5">
-            <i data-lucide="clock" class="w-4 h-4"></i> Response
-          </span>
-          <span class="font-semibold text-slate-700">Within 24–48 hours</span>
-        </div>
-        <div class="flex items-center justify-between text-sm">
-          <span class="text-slate-400 flex items-center gap-1.5">
-            <i data-lucide="banknote" class="w-4 h-4"></i> Price
-          </span>
-          <span class="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">GHS 130+</span>
-        </div>
-      </div>
+  <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     </div>
-
-    <div class="card bg-slate-50 border border-dashed border-slate-300 rounded-2xl p-6 flex flex-col items-center justify-center text-center group cursor-pointer hover:bg-slate-100 transition-all">
-      <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-2 shadow-sm">
-        <i data-lucide="plus" class="w-5 h-5 text-slate-400 group-hover:text-slate-900"></i>
-      </div>
-      <p class="text-sm font-bold text-slate-500 group-hover:text-slate-900">Create Template</p>
-    </div>
-
-  </div>
 </div>
+
+<div id="service-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 animate-in zoom-in-95 duration-200">
+        <h3 class="text-xl font-bold text-slate-900 mb-4" id="modal-title">Create New Service</h3>
+        <form id="service-form" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Service Name</label>
+                <input type="text" id="svc-name" required placeholder="e.g., Plumbing" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Description</label>
+                <textarea id="svc-desc" rows="2" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Response Time</label>
+                    <input type="text" id="svc-response" placeholder="24 hours" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Base Price</label>
+                    <input type="text" id="svc-price" placeholder="GHS 100" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+                </div>
+            </div>
+            <div class="flex gap-3 pt-4">
+                <button type="button" onclick="toggleServiceModal(false)" class="flex-1 py-2 border rounded-lg">Cancel</button>
+                <button type="submit" class="flex-1 py-2 bg-slate-900 text-white rounded-lg font-bold">Save Service</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let allServices = [];
+
+    function fetchServices() {
+        $.ajax({
+            url: '/api/v1/services',
+            method: 'GET',
+            success: (res) => {
+                allServices = res.data;
+                renderServices();
+            }
+        });
+    }
+
+    function renderServices() {
+        const grid = $('#services-grid').empty();
+
+        allServices.forEach(svc => {
+            grid.append(`
+                <div class="group card bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-slate-300 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-slate-900 transition-all duration-300">
+                            <img src="${svc.icon.outlined}" class="w-7 h-7 group-hover:hidden">
+                            <img src="${svc.icon.filled}" class="w-7 h-7 hidden group-hover:block invert">
+                        </div>
+                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="editService('${svc._id}')" class="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg">
+                                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="deleteService('${svc._id}')" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-900 mb-1">${svc.name}</h3>
+                    <p class="text-sm text-slate-500 line-clamp-2 mb-4">${svc.description}</p>
+
+                    <div class="space-y-3 pt-4 border-t border-slate-100">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-400 flex items-center gap-1.5">
+                                <i data-lucide="clock" class="w-4 h-4"></i> Response
+                            </span>
+                            <span class="font-semibold text-slate-700">${svc.response_time}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-400 flex items-center gap-1.5">
+                                <i data-lucide="banknote" class="w-4 h-4"></i> Price
+                            </span>
+                            <span class="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">${svc.price}</span>
+                        </div>
+                    </div>
+                </div>
+            `);
+        });
+
+        // Add the "Create Template" placeholder at the end
+        grid.append(`
+            <div onclick="toggleServiceModal(true)" class="card bg-slate-50 border border-dashed border-slate-300 rounded-2xl p-6 flex flex-col items-center justify-center text-center group cursor-pointer hover:bg-white hover:border-slate-900 transition-all">
+                <div class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-2 shadow-sm group-hover:bg-slate-900 transition-colors">
+                    <i data-lucide="plus" class="w-5 h-5 text-slate-400 group-hover:text-white"></i>
+                </div>
+                <p class="text-sm font-bold text-slate-500 group-hover:text-slate-900">Add New Service</p>
+            </div>
+        `);
+
+        lucide.createIcons();
+    }
+
+    function toggleServiceModal(show) {
+        $('#service-modal').toggleClass('hidden', !show);
+        if(!show) $('#service-form')[0].reset();
+    }
+
+    $(document).ready(fetchServices);
+</script>

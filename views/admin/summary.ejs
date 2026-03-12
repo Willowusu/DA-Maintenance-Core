@@ -247,4 +247,27 @@
       }
     });
   });
+
+  //function to call /api/auth/me and store user info in local storage
+  function fetchUserInfo() {
+    $.ajax({
+      url: '/api/v1/auth/me',
+      method: 'GET',
+      success: function(response) {
+        if (response.status === 'success') {
+          const user = response.data;
+          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('admin_name', user.full_name); // Store name for display
+        } else {
+          console.error('Failed to fetch user info:', response.message);
+        }
+      },
+      error: function() {
+        console.error('Error fetching user info');
+      }
+    });
+  }
+
+  fetchUserInfo(); // Fetch user info on page load
+
 </script>

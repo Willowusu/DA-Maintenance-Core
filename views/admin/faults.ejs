@@ -1,68 +1,347 @@
-<div class="w-full space-y-6">
+<style>
+  .alert {
+    @apply flex gap-3 p-4 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 items-start mb-6;
+  }
+
+  .alert-destructive {
+    @apply flex gap-3 p-4 rounded-lg bg-rose-50 text-rose-700 border border-rose-100 items-start mb-6;
+  }
+
+  ::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+  }
+</style>
+<div class="w-full max-w-7xl mx-auto space-y-6">
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
       <h1 class="text-3xl font-bold tracking-tight text-slate-900">Fault Reports</h1>
       <p class="text-slate-500">Track, approve, and manage service maintenance requests.</p>
     </div>
-    <div class="flex items-center gap-2">
-       <button class="btn inline-flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-50 transition-all font-medium shadow-sm">
-        <i data-lucide="download" class="w-4 h-4"></i> Export CSV
-      </button>
-    </div>
+    <button id="btn-export-csv"
+      class="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-50 transition-all font-medium shadow-sm">
+      <i data-lucide="download" class="w-4 h-4"></i> Export CSV
+    </button>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+  <div id="alert-container" class="hidden transition-all duration-300"></div>
+
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
     <div class="relative lg:col-span-2">
       <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-      <input type="text" placeholder="Search by description or business..." 
-             class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
+      <input type="text" id="fault-search" placeholder="Search description or business..."
+        class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
     </div>
-    <select class="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-slate-900 bg-white">
+    <select id="status-filter" class="px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white outline-none">
       <option value="">All Statuses</option>
       <option value="reported">Reported</option>
       <option value="approved">Approved</option>
       <option value="in_progress">In Progress</option>
       <option value="resolved">Resolved</option>
     </select>
-    <input type="date" class="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-slate-900">
-    <button class="bg-slate-900 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-slate-800">Apply Filters</button>
+    <input type="date" id="date-filter" class="px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none">
+    <button onclick="applyFilters()"
+      class="bg-slate-900 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-slate-800">Apply Filters</button>
   </div>
 
   <div class="card bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-slate-50/50 border-b border-slate-100">
+          <tr class="bg-slate-50/50 border-b border-slate-100 text-xs font-semibold uppercase text-slate-500">
+            <th class="px-6 py-4 text-xs font-semibold uppercase text-slate-500">Name</th>
             <th class="px-6 py-4 text-xs font-semibold uppercase text-slate-500">Fault & Business</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase text-slate-500">Service</th>
+            <th class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 text-center">Images</th>
             <th class="px-6 py-4 text-xs font-semibold uppercase text-slate-500">Status</th>
-            <th class="px-6 py-4 text-xs font-semibold uppercase text-slate-500">Reported Date</th>
+            <th class="px-6 py-4 text-xs font-semibold uppercase text-slate-500">Date</th>
             <th class="px-6 py-4 text-xs font-semibold uppercase text-slate-500 text-right">Action</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
-          <tr class="hover:bg-slate-50/50 transition-colors">
-            <td class="px-6 py-4">
-              <div class="font-semibold text-slate-900 truncate max-w-[200px]">Broken AC Unit in Server Room</div>
-              <div class="text-xs text-slate-500">TechHub Offices</div>
-            </td>
-            <td class="px-6 py-4">
-              <span class="text-sm px-2 py-1 bg-blue-50 text-blue-700 rounded-md font-medium">HVAC Maintenance</span>
-            </td>
-            <td class="px-6 py-4">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">
-                In Progress
-              </span>
-            </td>
-            <td class="px-6 py-4 text-sm text-slate-500">March 10, 2026</td>
-            <td class="px-6 py-4 text-right">
-              <button onclick="openModal('fault-123')" class="inline-flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-800">
-                <i data-lucide="eye" class="w-4 h-4"></i> View
-              </button>
-            </td>
-          </tr>
-        </tbody>
+        <tbody id="fault-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
       </table>
+    </div>
+    <footer class="p-4 border-t border-slate-100 flex justify-between items-center bg-slate-50/30">
+      <p class="text-xs text-slate-500">Total Requests: <span id="total-count" class="font-bold text-slate-900">0</span>
+      </p>
+    </footer>
+  </div>
+</div>
+
+<div id="fault-modal"
+  class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+  <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+      <h3 class="text-xl font-bold">Fault Analysis</h3>
+      <div class="flex gap-2">
+        <button id="btn-generate-pdf"
+          class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700">
+          <i data-lucide="file-text" class="w-4 h-4"></i> Service Report
+        </button>
+        <button onclick="toggleModal(false)"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
+      </div>
+    </div>
+    <div class="p-6 max-h-[75vh] overflow-y-auto" id="modal-content">
     </div>
   </div>
 </div>
+
+<script>
+  let allFaults = [];
+  let filteredFaults = [];
+
+  // 1. Core Fetch
+  function fetchFaults() {
+    $.ajax({
+      url: '/api/v1/fault-reports',
+      method: 'GET',
+      success: (res) => {
+        allFaults = res.data;
+        applyFilters();
+      }
+    });
+  }
+
+  // 2. Filters
+  function applyFilters() {
+    const query = $('#fault-search').val().toLowerCase();
+    const status = $('#status-filter').val();
+    const date = $('#date-filter').val();
+
+    filteredFaults = allFaults.filter(f => {
+      const matchesSearch = f.description.toLowerCase().includes(query) || (f.business_id?.name || '').toLowerCase().includes(query);
+      const matchesStatus = !status || f.status === status;
+      const matchesDate = !date || f.createdAt.startsWith(date);
+      return matchesSearch && matchesStatus && matchesDate;
+    });
+    renderTable();
+  }
+
+  // 3. Render Table
+  function renderTable() {
+    const tbody = $('#fault-table-body').empty();
+    filteredFaults.forEach(f => {
+      const statusStyle = {
+        reported: 'bg-slate-100 text-slate-600',
+        approved: 'bg-blue-50 text-blue-700 border-blue-100',
+        in_progress: 'bg-amber-50 text-amber-700 border-amber-100',
+        resolved: 'bg-emerald-50 text-emerald-700 border-emerald-100'
+      }[f.status] || 'bg-slate-100';
+
+      tbody.append(`
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="px-6 py-4">
+                        <div class="font-bold text-slate-900">${f.reporter_id.full_name}</div>
+                        <div class="text-[10px] uppercase font-bold text-slate-400 mt-1">${f.business_id?.name || 'Unassigned'}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-slate-900">${f.description}</div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="text-xs font-bold text-slate-400">${f.image_urls?.length || 0} Photos</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${statusStyle}">
+                            ${f.status.replace('_', ' ')}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-xs text-slate-500">${f.createdAt.split('T')[0]}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="viewDetails('${f._id}')" class="text-slate-900 font-bold hover:underline">Manage</button>
+                    </td>
+                </tr>
+            `);
+    });
+    $('#total-count').text(filteredFaults.length);
+    lucide.createIcons();
+  }
+
+  // 4. Detailed Modal & PDF Generator
+  function viewDetails(id) {
+    const f = allFaults.find(item => item._id === id);
+    if (!f) return;
+
+    // Photo Gallery
+    const photoHtml = f.image_urls?.length
+      ? `<div class="flex gap-2 overflow-x-auto py-2">${f.image_urls.map(img => `<img src="${img}" class="h-32 w-48 object-cover rounded-lg border">`).join('')}</div>`
+      : `<div class="p-4 bg-slate-50 rounded-lg text-slate-400 text-xs italic">No photos attached.</div>`;
+
+    // History Timeline
+    const historyHtml = f.status_history?.slice().reverse().map(h => `
+            <div class="flex gap-3 border-l-2 border-slate-200 ml-2 pl-4 pb-4">
+                <div class="w-2 h-2 rounded-full bg-slate-400 -ml-[21px] mt-1.5"></div>
+                <div>
+                    <div class="text-[10px] font-bold uppercase text-slate-500">${h.status.replace('_', ' ')}</div>
+                    <div class="text-[10px] text-slate-400">${new Date(h.updated_at).toLocaleString()}</div>
+                </div>
+            </div>
+        `).join('');
+
+    $('#modal-content').html(`
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-6">
+            <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="w-12 h-12 bg-slate-200 rounded-full flex items-center justify-center text-slate-500">
+                    <i data-lucide="user" class="w-6 h-6"></i>
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Reported By</h4>
+                    <p class="text-sm font-bold text-slate-900">${f.reporter_id?.full_name || 'System User'}</p>
+                    <div class="flex gap-3 mt-1">
+                        <span class="text-[11px] text-slate-500 flex items-center gap-1">
+                            <i data-lucide="phone" class="w-3 h-3"></i> ${f.reporter_id?.phone_number || 'N/A'}
+                        </span>
+                        <span class="text-[11px] text-slate-500 flex items-center gap-1">
+                            <i data-lucide="shield-check" class="w-3 h-3"></i> ${f.reporter_id?.role?.replace('_', ' ') || 'Reporter'}
+                        </span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Reported Date</h4>
+                    <p class="text-xs font-medium text-slate-700">${new Date(f.createdAt).toLocaleDateString()}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 border border-slate-100 rounded-xl">
+                    <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Exact Location</h4>
+                    <p class="text-sm text-slate-700 font-medium">
+                        <i data-lucide="map-pin" class="w-3 h-3 inline text-rose-500"></i> ${f.location_detail}
+                    </p>
+                </div>
+                <div class="p-4 border border-slate-100 rounded-xl">
+                    <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Service Required</h4>
+                    <p class="text-sm text-slate-700 font-medium">
+                         <i data-lucide="tool" class="w-3 h-3 inline text-blue-500"></i> ${f.service_id?.name || 'General Maintenance'}
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Description of Fault</h4>
+                <div class="p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+                    <p class="text-slate-700 text-sm leading-relaxed">${f.description}</p>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Evidence Photos (${f.image_urls?.length || 0})</h4>
+                ${photoHtml}
+            </div>
+        </div>
+
+        <div class="bg-slate-900 p-6 rounded-2xl text-white">
+            <h4 class="text-xs font-bold uppercase mb-6 flex items-center gap-2">
+                <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i> Maintenance Log
+            </h4>
+            
+            <div class="space-y-4 mb-8">
+                ${f.status_history?.slice().reverse().map(h => `
+                    <div class="relative pl-6 pb-2 border-l border-slate-700 last:border-0">
+                        <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-slate-500"></div>
+                        <div class="text-[10px] font-bold uppercase text-slate-400">${h.status.replace('_', ' ')}</div>
+                        <div class="text-[10px] text-slate-500">${new Date(h.updated_at).toLocaleString()}</div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div class="pt-6 border-t border-slate-800">
+                <label class="text-[10px] font-bold uppercase text-slate-400 block mb-3">Update Status</label>
+                <select onchange="updateStatus('${f._id}', this.value)" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-500 text-white cursor-pointer">
+                    <option value="reported" ${f.status === 'reported' ? 'selected' : ''}>Reported</option>
+                    <option value="approved" ${f.status === 'approved' ? 'selected' : ''}>Approved</option>
+                    <option value="in_progress" ${f.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                    <option value="resolved" ${f.status === 'resolved' ? 'selected' : ''}>Resolved</option>
+                </select>
+            </div>
+        </div>
+    </div>
+`);
+
+    // Attach PDF generation logic to the button
+    $('#btn-generate-pdf').off('click').on('click', () => generateServiceReport(f));
+
+    $('#fault-modal').removeClass('hidden');
+    lucide.createIcons();
+  }
+
+  function generateServiceReport(f) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Header
+    doc.setFillColor(15, 23, 42); // Slate 900
+    doc.rect(0, 0, 210, 40, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.text('SERVICE MAINTENANCE REPORT', 15, 25);
+    doc.setFontSize(10);
+    doc.text(`Job ID: ${f._id.substring(0, 8).toUpperCase()}`, 15, 33);
+
+    // Client & Service Info
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text('Business Details', 15, 55);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(`Company: ${f.business_id?.name || 'N/A'}`, 15, 62);
+    doc.text(`Date Reported: ${new Date(f.createdAt).toLocaleDateString()}`, 15, 67);
+    doc.text(`Service Category: ${f.service_id?.name || 'General'}`, 15, 72);
+
+    // Fault Description Box
+    doc.setDrawColor(226, 232, 240);
+    doc.setFillColor(248, 250, 252);
+    doc.rect(15, 80, 180, 25, 'FD');
+    doc.setFont("helvetica", "bold");
+    doc.text('Fault Description:', 20, 87);
+    doc.setFont("helvetica", "normal");
+    doc.text(doc.splitTextToSize(f.description, 170), 20, 94);
+
+    // Maintenance Log Table
+    doc.setFont("helvetica", "bold");
+    doc.text('Maintenance Lifecycle Log', 15, 120);
+    const logData = f.status_history.map(h => [
+      h.status.toUpperCase().replace('_', ' '),
+      new Date(h.updated_at).toLocaleString()
+    ]);
+
+    doc.autoTable({
+      startY: 125,
+      head: [['Status Update', 'Timestamp']],
+      body: logData,
+      theme: 'striped',
+      headStyles: { fillColor: [51, 65, 85] }
+    });
+
+    // Footer
+    const finalY = doc.lastAutoTable.finalY + 20;
+    doc.setFontSize(9);
+    doc.setTextColor(100);
+    doc.text('Verified by DA Maintenance Admin', 15, finalY);
+    doc.text(`Report Generated: ${new Date().toLocaleString()}`, 15, finalY + 5);
+
+    doc.save(`ServiceReport_${f._id.substring(0, 5)}.pdf`);
+  }
+
+  function updateStatus(id, status) {
+    $.ajax({
+      url: `/api/v1/app-faults/${id}/status`,
+      method: 'PATCH',
+      contentType: 'application/json',
+      data: JSON.stringify({ status }),
+      success: () => {
+        $('#fault-modal').addClass('hidden');
+        fetchFaults();
+        showAlert('success', 'Update Successful', 'Maintenance status has been recorded.');
+      }
+    });
+  }
+
+  function toggleModal(show) { $('#fault-modal').toggleClass('hidden', !show); }
+  $(document).ready(fetchFaults);
+</script>
