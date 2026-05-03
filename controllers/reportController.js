@@ -138,3 +138,4 @@ exports.updateFaultReportStatus = async (req, res) => {
         res.json({ code: 500, status: 'error', data: {}, message: error.message });
     }
 }
+

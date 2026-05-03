@@ -1,70 +1,202 @@
-<div class="card w-full shadow-xl border border-slate-200 rounded-xl overflow-hidden bg-white">
-  <header class="p-6 border-b border-slate-100 bg-slate-50/50">
-    <div class="flex justify-between items-start">
-      <div>
-        <h2 class="text-xl font-bold text-slate-900">Reports & Analytics</h2>
-        <p class="text-sm text-slate-500">Configure filters to generate custom data insights</p>
-      </div>
-      <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">Real-time Data</span>
+<div class="space-y-6">
+    <div class="card w-full shadow-xl border border-slate-200 rounded-xl overflow-hidden bg-white">
+        <header class="p-6 border-b border-slate-100 bg-slate-50/50">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Reports & Analytics</h2>
+                    <p class="text-sm text-slate-500">Analyze growth and performance across platform categories</p>
+                </div>
+                <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">Aggregation Engine</span>
+            </div>
+        </header>
+
+        <section class="p-6">
+            <div id="report-stats" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 hidden">
+                <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Volume</p>
+                    <p id="stat-total-volume" class="text-lg font-bold text-slate-900">0</p>
+                </div>
+                <div id="stat-special-container" class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                    </div>
+            </div>
+
+            <form id="analytics-form" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-slate-700">Category</label>
+                    <select id="report-category" class="w-full p-2.5 border border-slate-300 rounded-lg bg-white outline-none focus:ring-2 focus:ring-slate-900 transition-all">
+                        <option value="faults">Fault Reports</option>
+                        <option value="businesses">Registered Businesses</option>
+                        <option value="users">App Users</option>
+                        <option value="services">Service Catalog</option>
+                    </select>
+                </div>
+
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-slate-700">Date From</label>
+                    <input type="date" id="date-from" class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-slate-900">
+                </div>
+
+                <div class="grid gap-2">
+                    <label class="text-sm font-semibold text-slate-700">Date To</label>
+                    <input type="date" id="date-to" class="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-slate-900">
+                </div>
+
+                <div class="grid gap-2 md:col-span-3">
+                    <label class="text-sm font-semibold text-slate-700">Report Granularity</label>
+                    <div class="flex gap-6 mt-1">
+                        <label class="flex items-center gap-2 text-sm cursor-pointer group">
+                            <input type="radio" name="granularity" value="daily" checked class="w-4 h-4 accent-slate-900"> 
+                            <span class="group-hover:text-slate-900">Daily</span>
+                        </label>
+                        <label class="flex items-center gap-2 text-sm cursor-pointer group">
+                            <input type="radio" name="granularity" value="weekly" class="w-4 h-4 accent-slate-900"> 
+                            <span class="group-hover:text-slate-900">Weekly</span>
+                        </label>
+                        <label class="flex items-center gap-2 text-sm cursor-pointer group">
+                            <input type="radio" name="granularity" value="monthly" class="w-4 h-4 accent-slate-900"> 
+                            <span class="group-hover:text-slate-900">Monthly</span>
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <footer class="p-6 pt-0 border-t border-slate-50 mt-4 flex flex-col sm:flex-row gap-3">
+            <button onclick="runReport()" class="btn flex-1 bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-bold transition-all shadow-lg shadow-slate-200">
+                Generate Analysis
+            </button>
+            <button onclick="exportReport()" class="btn flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 py-3 rounded-xl font-bold transition-all">
+                Download CSV
+            </button>
+        </footer>
     </div>
-  </header>
 
-  <section class="p-6">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
-        <p class="text-xs text-slate-500 uppercase font-semibold">Total Queries</p>
-        <p class="text-lg font-bold">1,284</p>
-      </div>
-      <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
-        <p class="text-xs text-slate-500 uppercase font-semibold">Avg. Growth</p>
-        <p class="text-lg font-bold text-green-600">+12.5%</p>
-      </div>
-      </div>
-
-    <form class="form grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="grid gap-2">
-        <label for="date-from" class="text-sm font-semibold text-slate-700">Date From</label>
-        <input type="date" id="date-from" class="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none">
-      </div>
-
-      <div class="grid gap-2">
-        <label for="date-to" class="text-sm font-semibold text-slate-700">Date To</label>
-        <input type="date" id="date-to" class="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none">
-      </div>
-
-      <div class="grid gap-2">
-        <label for="category" class="text-sm font-semibold text-slate-700">Category</label>
-        <select id="category" class="w-full p-2 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-          <option value="faults">Fault Reports</option>
-          <option value="businesses">Businesses</option>
-          <option value="users">Users</option>
-          <option value="services">Services</option>
-        </select>
-      </div>
-
-      <div class="grid gap-2 md:col-span-3">
-        <label class="text-sm font-semibold text-slate-700">Report Granularity</label>
-        <div class="flex gap-4 mt-1">
-          <label class="flex items-center gap-2 text-sm cursor-pointer">
-            <input type="radio" name="granularity" value="daily" checked class="text-slate-900"> Daily
-          </label>
-          <label class="flex items-center gap-2 text-sm cursor-pointer">
-            <input type="radio" name="granularity" value="weekly" class="text-slate-900"> Weekly
-          </label>
-          <label class="flex items-center gap-2 text-sm cursor-pointer">
-            <input type="radio" name="granularity" value="monthly" class="text-slate-900"> Monthly
-          </label>
+    <div id="results-area" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="p-4 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider">Detailed Findings</h3>
+                <span id="record-count" class="text-[10px] font-bold bg-white border border-slate-200 px-2 py-1 rounded-md text-slate-500"></span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr id="table-header-row" class="text-[11px] font-bold uppercase text-slate-400 border-b border-slate-100 bg-white">
+                            </tr>
+                    </thead>
+                    <tbody id="report-table-body" class="divide-y divide-slate-50 text-sm">
+                        </tbody>
+                </table>
+            </div>
         </div>
-      </div>
-    </form>
-  </section>
-
-  <footer class="p-6 pt-0 flex flex-col sm:flex-row gap-3">
-    <button type="button" class="btn flex-1 bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-lg font-medium transition-colors">
-      Generate Report
-    </button>
-    <button type="button" class="btn flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 py-2.5 rounded-lg font-medium transition-colors">
-      Export to CSV
-    </button>
-  </footer>
+    </div>
 </div>
+
+<script>
+    let currentReport = [];
+
+    async function runReport() {
+        const payload = {
+            category: $('#report-category').val(),
+            from: $('#date-from').val(),
+            to: $('#date-to').val(),
+            granularity: $('input[name="granularity"]:checked').val()
+        };
+
+        if (!payload.from || !payload.to) {
+            alert("Please select a valid date range.");
+            return;
+        }
+
+        try {
+            // Updated API route to match your request
+            const res = await $.get('/api/v1/admin/analytics-report', payload);
+            currentReport = res.data;
+            renderAnalytics();
+        } catch (err) {
+            console.error(err);
+            alert("Failed to generate report. Check console for details.");
+        }
+    }
+
+    function renderAnalytics() {
+        const category = $('#report-category').val();
+        const tbody = $('#report-table-body').empty();
+        const thead = $('#table-header-row').empty();
+        
+        $('#results-area').removeClass('hidden');
+        $('#record-count').text(`${currentReport.length} Data Points`);
+
+        // 1. Setup Dynamic Table Headers
+        let headerHtml = `<th class="px-6 py-4">Timeline</th>`;
+        if (category === 'faults') {
+            headerHtml += `<th class="px-6 py-4">Tickets</th><th class="px-6 py-4">Resolved</th><th class="px-6 py-4">Efficiency</th>`;
+        } else {
+            headerHtml += `<th class="px-6 py-4 capitalize">New ${category}</th><th class="px-6 py-4">Growth Rate</th>`;
+        }
+        thead.append(headerHtml);
+
+        // 2. Setup Summary Stats
+        $('#report-stats').removeClass('hidden');
+        const totalVolume = currentReport.reduce((acc, curr) => acc + curr.total, 0);
+        $('#stat-total-volume').text(totalVolume.toLocaleString());
+
+        let specialStatHtml = '';
+        if (category === 'faults') {
+            const totalResolved = currentReport.reduce((acc, curr) => acc + (curr.resolved || 0), 0);
+            const avgRate = totalVolume > 0 ? ((totalResolved / totalVolume) * 100).toFixed(1) : 0;
+            specialStatHtml = `
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Avg. Resolution</p>
+                <p class="text-lg font-bold text-blue-600">${avgRate}%</p>
+            `;
+        } else {
+            const growth = currentReport.length > 1 ? (((currentReport[currentReport.length-1].total - currentReport[0].total) / currentReport[0].total) * 100).toFixed(1) : 0;
+            specialStatHtml = `
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Period Growth</p>
+                <p class="text-lg font-bold ${growth >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${growth}%</p>
+            `;
+        }
+        $('#stat-special-container').html(specialStatHtml);
+
+        // 3. Render Data Rows
+        currentReport.forEach((row, idx) => {
+            let rowHtml = `<td class="px-6 py-4 font-semibold text-slate-900">${row._id}</td>`;
+            
+            if (category === 'faults') {
+                const rate = row.total > 0 ? ((row.resolved / row.total) * 100).toFixed(1) : 0;
+                rowHtml += `
+                    <td class="px-6 py-4">${row.total}</td>
+                    <td class="px-6 py-4 text-emerald-600 font-medium">${row.resolved}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-bold text-xs">${rate}%</span>
+                    </td>`;
+            } else {
+                let growthCell = '0%';
+                if (idx > 0) {
+                    const prev = currentReport[idx - 1].total;
+                    growthCell = prev > 0 ? (((row.total - prev) / prev) * 100).toFixed(1) + '%' : '100%';
+                }
+                rowHtml += `
+                    <td class="px-6 py-4 font-medium">${row.total}</td>
+                    <td class="px-6 py-4 ${parseFloat(growthCell) >= 0 ? 'text-emerald-600' : 'text-rose-600'} font-bold">${growthCell}</td>`;
+            }
+            tbody.append(`<tr class="hover:bg-slate-50/50">${rowHtml}</tr>`);
+        });
+    }
+
+    function exportReport() {
+        if (!currentReport.length) return alert("Generate a report first.");
+        const category = $('#report-category').val();
+        
+        let csv = "Timeline,Volume,Resolution_or_Growth\n";
+        currentReport.forEach(row => {
+            csv += `${row._id},${row.total},${row.resolved || 'N/A'}\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `DA_Analytics_${category}_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+    }
+</script>

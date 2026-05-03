@@ -1,7 +1,12 @@
 <style>
-        .alert { @apply flex gap-3 p-4 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 items-start; }
-        .alert-destructive { @apply flex gap-3 p-4 rounded-lg bg-rose-50 text-rose-700 border border-rose-100 items-start; }
-    </style>
+    .alert {
+        @apply flex gap-3 p-4 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 items-start;
+    }
+
+    .alert-destructive {
+        @apply flex gap-3 p-4 rounded-lg bg-rose-50 text-rose-700 border border-rose-100 items-start;
+    }
+</style>
 
 <div class="w-full max-w-7xl mx-auto space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -9,20 +14,23 @@
             <h1 class="text-3xl font-bold tracking-tight text-slate-900">Businesses</h1>
             <p class="text-slate-500">Manage partners, track staff, and monitor reported faults.</p>
         </div>
-        <button onclick="toggleModal(true)" class="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-lg hover:bg-slate-800 transition-all font-medium shadow-sm">
+        <button onclick="toggleModal(true)"
+            class="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-lg hover:bg-slate-800 transition-all font-medium shadow-sm">
             <i data-lucide="plus-circle" class="w-5 h-5"></i> Add New Business
         </button>
     </div>
 
     <div id="alert-container" class="hidden transition-all duration-300"></div>
 
-    <div class="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+    <div
+        class="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
         <div class="relative w-full md:w-96">
             <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-            <input type="text" id="business-search" placeholder="Search by name or email..." 
-                   class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
+            <input type="text" id="business-search" placeholder="Search by name or email..."
+                class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none text-sm">
         </div>
-        <button id="btn-export" class="inline-flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
+        <button id="btn-export"
+            class="inline-flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
             <i data-lucide="download" class="w-4 h-4"></i> Export CSV
         </button>
     </div>
@@ -42,16 +50,20 @@
             </table>
         </div>
         <div class="bg-slate-50/50 border-t border-slate-100 px-6 py-4 flex items-center justify-between">
-            <p class="text-sm text-slate-500">Showing <span id="page-range" class="font-medium text-slate-900"></span> of <span id="total-count"></span></p>
+            <p class="text-sm text-slate-500">Showing <span id="page-range" class="font-medium text-slate-900"></span>
+                of <span id="total-count"></span></p>
             <div class="flex gap-2">
-                <button id="prev-page" class="p-2 border rounded-lg hover:bg-white disabled:opacity-50"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                <button id="next-page" class="p-2 border rounded-lg hover:bg-white disabled:opacity-50"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                <button id="prev-page" class="p-2 border rounded-lg hover:bg-white disabled:opacity-50"><i
+                        data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                <button id="next-page" class="p-2 border rounded-lg hover:bg-white disabled:opacity-50"><i
+                        data-lucide="chevron-right" class="w-4 h-4"></i></button>
             </div>
         </div>
     </div>
 </div>
 
-<div id="add-business-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+<div id="add-business-modal"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6">
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-bold">Register Business</h3>
@@ -60,31 +72,39 @@
         <form id="add-business-form" class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Business Name</label>
-                <input type="text" id="new-biz-name" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+                <input type="text" id="new-biz-name" required
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Address</label>
-                <textarea id="new-biz-address" rows="2" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none"></textarea>
+                <textarea id="new-biz-address" rows="2" required
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none"></textarea>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Contact Person</label>
-                    <input type="text" id="new-biz-contact" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+                    <input type="text" id="new-biz-contact" required
+                        class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Phone</label>
-                    <input type="tel" id="new-biz-phone" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+                    <input type="tel" id="new-biz-phone" required
+                        class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                    <input type="email" id="new-biz-email" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+                    <input type="email" id="new-biz-email" required
+                        class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
                 </div>
             </div>
             <div class="flex gap-3 pt-4">
-                <button type="button" onclick="toggleModal(false)" class="flex-1 py-2.5 border rounded-lg font-medium">Cancel</button>
-                <button type="submit" id="btn-save" class="flex-1 py-2.5 bg-slate-900 text-white rounded-lg font-medium shadow-lg hover:bg-slate-800">Save Business</button>
+                <button type="button" onclick="toggleModal(false)"
+                    class="flex-1 py-2.5 border rounded-lg font-medium">Cancel</button>
+                <button type="submit" id="btn-save"
+                    class="flex-1 py-2.5 bg-slate-900 text-white rounded-lg font-medium shadow-lg hover:bg-slate-800">Save
+                    Business</button>
             </div>
         </form>
     </div>
@@ -110,7 +130,7 @@
 
     function toggleModal(show) {
         $('#add-business-modal').toggleClass('hidden', !show);
-        if(!show) $('#add-business-form')[0].reset();
+        if (!show) $('#add-business-form')[0].reset();
     }
 
     function fetchData() {
@@ -127,7 +147,7 @@
 
     function applyFilters() {
         const query = $('#business-search').val().toLowerCase();
-        filteredBusinesses = allBusinesses.filter(b => 
+        filteredBusinesses = allBusinesses.filter(b =>
             b.name.toLowerCase().includes(query) || b.email.toLowerCase().includes(query)
         );
         currentPage = 1;
@@ -140,7 +160,7 @@
         const items = filteredBusinesses.slice(start, end);
         const tbody = $('#business-table-body').empty();
 
-        if(!items.length) tbody.append('<tr><td colspan="4" class="py-10 text-center text-slate-400 italic">No partners found.</td></tr>');
+        if (!items.length) tbody.append('<tr><td colspan="4" class="py-10 text-center text-slate-400 italic">No partners found.</td></tr>');
 
         items.forEach(b => {
             tbody.append(`
@@ -182,7 +202,7 @@
         lucide.createIcons();
     }
 
-    $('#add-business-form').on('submit', function(e) {
+    $('#add-business-form').on('submit', function (e) {
         e.preventDefault();
         const btn = $('#btn-save');
         const payload = {
@@ -212,8 +232,8 @@
     });
 
     $('#business-search').on('input', applyFilters);
-    $('#prev-page').click(() => { if(currentPage > 1) { currentPage--; updateUI(); } });
-    $('#next-page').click(() => { if((currentPage * itemsPerPage) < filteredBusinesses.length) { currentPage++; updateUI(); } });
-    
+    $('#prev-page').click(() => { if (currentPage > 1) { currentPage--; updateUI(); } });
+    $('#next-page').click(() => { if ((currentPage * itemsPerPage) < filteredBusinesses.length) { currentPage++; updateUI(); } });
+
     $(document).ready(fetchData);
 </script>

@@ -6,6 +6,28 @@
   .alert-destructive {
     @apply flex gap-3 p-4 rounded-lg bg-rose-50 text-rose-700 border border-rose-100 items-start mb-6;
   }
+
+  /* Simple utility for dropdowns if not using a JS framework like Bootstrap/Alpine */
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-menu {
+    border: 1px solid #e2e8f0;
+    animation: slideUp 0.2s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 </style>
 <div class="w-full max-w-7xl mx-auto space-y-6">
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -113,8 +135,20 @@
       </div>
       <div>
         <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Phone Number (+233)</label>
-        <input type="tel" id="inv-phone" required placeholder="24 123 4567"
-          class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-slate-900 outline-none">
+        <div class="space-y-1">
+          <label for="inv-phone" class="text-xs font-bold uppercase text-slate-500 tracking-wider">Phone Number</label>
+          <div class="flex group">
+            <span
+              class="inline-flex items-center px-5 rounded-l-lg border border-r-0 border-slate-200 bg-slate-50 text-slate-500 text-sm font-medium transition-colors group-focus-within:border-slate-900 group-focus-within:bg-white">
+              <img src="https://flagcdn.com/w20/gh.png" srcset="https://flagcdn.com/w40/gh.png 2x" width="20"
+                alt="Ghana" class="mr-2 rounded-sm shadow-sm">
+              +233
+            </span>
+            <input type="tel" id="inv-phone" required placeholder="24 123 4567"
+              class="w-full px-3 py-2 border border-slate-200 rounded-r-lg focus:ring-0 focus:border-slate-900 outline-none transition-all placeholder:text-slate-300">
+          </div>
+          <p class="text-[10px] text-slate-400 mt-1 italic">Skip the leading '0' (e.g., 24xxxxxxx)</p>
+        </div>
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div>
@@ -195,7 +229,7 @@
   }
 
   // 3. Filter Logic
-function applyUserFilters() {
+  function applyUserFilters() {
     const query = $('#user-search').val().toLowerCase();
     const role = $('#role-filter').val();
     const fromDate = $('#date-from').val() ? new Date($('#date-from').val()).setHours(0, 0, 0, 0) : null;
@@ -205,7 +239,7 @@ function applyUserFilters() {
       // Use full_name and add null checks (using optional chaining or || '')
       const name = (u.full_name || '').toLowerCase();
       const phone = (u.phone_number || '');
-      
+
       const matchesSearch = name.includes(query) || phone.includes(query);
       const matchesRole = !role || u.role === role;
 
@@ -218,7 +252,7 @@ function applyUserFilters() {
 
     currentPage = 1;
     renderUserTable();
-}
+  }
 
   // 4. Render Table
   function renderUserTable() {
@@ -233,6 +267,10 @@ function applyUserFilters() {
 
     items.forEach(u => {
       const roleColor = u.role === 'business_admin' ? 'bg-purple-50 text-purple-700' : 'bg-blue-50 text-blue-700';
+      // Inside your loop where you append <tr>
+      const statusLabel = u.is_active ? 'Deactivate User' : 'Activate User';
+      const statusIcon = u.is_active ? 'user-x' : 'user-check';
+      const statusColor = u.is_active ? 'text-rose-600' : 'text-emerald-600';
       tbody.append(`
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-6 py-4 font-medium text-slate-900">
@@ -248,8 +286,28 @@ function applyUserFilters() {
                     <td class="px-6 py-4 text-slate-500 text-xs">${u.createdAt.split('T')[0]}</td>
                     <td class="px-6 py-4"><span class="text-emerald-600 font-semibold italic text-xs">Active</span></td>
                     <td class="px-6 py-4 text-right">
-                        <button class="p-2 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-900"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
-                    </td>
+        <div class="relative inline-block text-left dropdown">
+            <button class="p-2 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none" id="menu-button-${u._id}" data-bs-toggle="dropdown">
+                <i data-lucide="more-vertical" class="w-4 h-4 text-slate-500"></i>
+            </button>
+            
+            <div class="hidden dropdown-menu absolute right-0 mt-2 w-48 origin-top-right rounded-xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-50 p-1">
+                <button onclick="editUser('${u._id}')" class="flex items-center gap-2 w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-md">
+                    <i data-lucide="edit-3" class="w-4 h-4"></i> Edit Profile
+                </button>
+                
+                <button onclick="toggleUserStatus('${u._id}', ${u.is_active})" class="flex items-center gap-2 w-full px-4 py-2 text-sm ${statusColor} hover:bg-slate-50 rounded-md">
+                    <i data-lucide="${statusIcon}" class="w-4 h-4"></i> ${statusLabel}
+                </button>
+                
+                <div class="my-1 border-t border-slate-100"></div>
+                
+                <button onclick="deleteUser('${u._id}')" class="flex items-center gap-2 w-full px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 rounded-md">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> Delete User
+                </button>
+            </div>
+        </div>
+    </td>
                 </tr>
             `);
     });
@@ -277,7 +335,7 @@ function applyUserFilters() {
     btn.prop('disabled', true).text('Sending SMS...');
 
     $.ajax({
-      url: '/api/v1/users/invite',
+      url: '/api/v1/admin/users/invite',
       method: 'POST',
       contentType: 'application/json',
       data: JSON.stringify(payload),
@@ -311,6 +369,29 @@ function applyUserFilters() {
     a.download = `DA_Users_List_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
   });
+
+
+  function toggleUserStatus(userId, currentStatus) {
+    const action = currentStatus ? 'Deactivate' : 'Activate';
+
+    if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+
+    $.ajax({
+      url: `/api/v1/users/${userId}/toggle-status`,
+      method: 'PATCH',
+      contentType: 'application/json',
+      data: JSON.stringify({ is_active: !currentStatus }),
+      success: (res) => {
+        // Re-fetch data to refresh the table
+        fetchUsers();
+        // Optional: trigger a small toast notification
+        console.log(`User ${action}d successfully`);
+      },
+      error: (err) => {
+        alert(err.responseJSON?.message || "Failed to update status");
+      }
+    });
+  }
 
   $(document).ready(fetchUsers);
 </script>

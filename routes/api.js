@@ -7,6 +7,7 @@ const userController = require('../controllers/userController');
 const serviceController = require('../controllers/serviceController');
 const reportController = require('../controllers/reportController');
 const authController = require('../controllers/authController');
+const analyticsController = require('../controllers/analyticsController');
 
 
 //route to get logged in user details
@@ -74,6 +75,11 @@ router.post('/users', userController.createUser);
 
 
 // admin routes
+router.get('/admin/analytics-report', authenticate, analyticsController.getAnalyticsReport);
+
+router.post('/admin/users/invite', authenticate, userController.inviteUser);
+
+router.patch('/users/:id/toggle-status', authenticate, userController.toggleUserStatus);
 
 
 module.exports = router;
