@@ -29,7 +29,7 @@ exports.requestOtp = async (req, res) => {
     }
 
     //for testing purposes let a specific number always return the same OTP
-    if (phone_number === '233000000000') {
+    if (phone_number === '233000000000' || phone_number === '233111111111') {
         const testOtp = '123456';
         otpCache.set(phone_number, testOtp);
         return res.json({
