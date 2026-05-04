@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+let dashboardController = require('../controllers/dashboardController')
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -11,9 +12,7 @@ router.get('/login', function (req, res, next) {
 });
 
 /* GET users listing. */
-router.get('/summary', function (req, res, next) {
-    res.render('admin/summary', { layout: 'layouts/admin/main', title: 'Admin Summary', activePage: 'summary' });
-});
+router.get('/summary', dashboardController.getDashboard);
 
 /* GET users listing. */
 router.get('/reports', function (req, res, next) {
